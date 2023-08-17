@@ -1,12 +1,12 @@
 [package]
-name = "poseidon"
+name = "pse-poseidon"
 version = "0.2.0"
 authors = ["kilic <kiliconu@itu.edu.tr>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-halo2curves = { git = 'https://github.com/privacy-scaling-explorations/halo2curves.git', tag = '0.3.2' }
+halo2curves = { git = 'https://github.com/axiom-crypto/halo2curves.git' }
 subtle = { version = "2.3", default-features = false }
 
 [dev-dependencies]
