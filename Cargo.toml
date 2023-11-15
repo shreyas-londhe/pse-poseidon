@@ -6,7 +6,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-halo2curves = { git = 'https://github.com/axiom-crypto/halo2curves.git' }
+halo2curves = { package = "halo2curves-axiom", version = "*" }
 subtle = { version = "2.3", default-features = false }
 
 [dev-dependencies]
