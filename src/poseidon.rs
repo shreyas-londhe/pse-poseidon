@@ -67,6 +67,19 @@ impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> Poseidon<F, T, 
         // Returns the challenge while preserving internal state
         self.state.result()
     }
+
+    /// Resets the internal state
+    pub fn reset(&mut self) {
+        self.state = State::default();
+        self.absorbing.clear();
+    }
+
+    /// Squeezes and resets the internal state making the hasher stateless
+    pub fn squeeze_and_reset(&mut self) -> F {
+        let result = self.squeeze();
+        self.reset();
+        result
+    }
 }
 
 #[cfg(test)]
