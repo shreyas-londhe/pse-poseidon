@@ -6,8 +6,10 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+digest = "0.10.7"
 halo2curves = { package = "halo2curves-axiom", version = "*" }
 subtle = { version = "2.3", default-features = false }
+typenum = "1.17.0"
 
 [dev-dependencies]
 rand_core = { version = "0.6", default-features = false }

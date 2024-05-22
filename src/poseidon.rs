@@ -1,4 +1,5 @@
 use crate::{Spec, State};
+use digest::{core_api::BlockSizeUser, FixedOutput, HashMarker, OutputSizeUser, Update};
 use halo2curves::group::ff::{FromUniformBytes, PrimeField};
 
 /// Poseidon hasher that maintains state and inputs and yields single element
@@ -79,6 +80,49 @@ impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> Poseidon<F, T, 
         let result = self.squeeze();
         self.reset();
         result
+    }
+}
+
+impl<F: PrimeField, const T: usize, const RATE: usize> HashMarker for Poseidon<F, T, RATE> {}
+
+impl<F: PrimeField, const T: usize, const RATE: usize> OutputSizeUser for Poseidon<F, T, RATE> {
+    type OutputSize = typenum::U32;
+}
+
+impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> Update for Poseidon<F, T, RATE> {
+    fn update(&mut self, data: &[u8]) {
+        let data_in_fe = data.iter().map(|v| F::from(*v as u64)).collect::<Vec<F>>();
+        Poseidon::update(self, &data_in_fe);
+    }
+}
+
+impl<F: PrimeField, const T: usize, const RATE: usize> BlockSizeUser for Poseidon<F, T, RATE> {
+    type BlockSize = typenum::U64;
+
+    fn block_size() -> usize {
+        (F::CAPACITY as usize) * RATE
+    }
+}
+
+impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> Default for Poseidon<F, T, RATE> {
+    fn default() -> Self {
+        // TODO: Find a way to make this generic, for now we are hardcoding
+        Self {
+            spec: Spec::new(8 as usize, 57 as usize),
+            state: State::default(),
+            absorbing: Vec::new(),
+        }
+    }
+}
+
+impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> FixedOutput
+    for Poseidon<F, T, RATE>
+{
+    fn finalize_into(mut self, out: &mut digest::Output<Self>) {
+        let result = self.squeeze_and_reset();
+        let mut result_bytes = result.to_repr().as_ref().to_vec();
+        result_bytes.reverse();
+        out.copy_from_slice(&result_bytes);
     }
 }
 
