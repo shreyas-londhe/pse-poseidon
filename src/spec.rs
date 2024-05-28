@@ -1,5 +1,5 @@
 use crate::{grain::Grain, matrix::Matrix};
-use halo2curves::group::ff::{FromUniformBytes, PrimeField};
+use halo2curves_axiom::group::ff::{FromUniformBytes, PrimeField};
 use std::ops::Index;
 
 /// `State` is structure `T` sized field elements that are subjected to
@@ -392,8 +392,8 @@ impl<F: FromUniformBytes<64>, const T: usize, const RATE: usize> Spec<F, T, RATE
 
 #[cfg(test)]
 pub(super) mod tests {
-    use halo2curves::group::ff::{FromUniformBytes, PrimeField};
-    use halo2curves::serde::SerdeObject;
+    use halo2curves_axiom::group::ff::{FromUniformBytes, PrimeField};
+    use halo2curves_axiom::serde::SerdeObject;
 
     use super::MDSMatrix;
     use crate::grain::Grain;
